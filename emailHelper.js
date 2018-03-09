@@ -7,10 +7,11 @@ $(document).ready(function()
             datatype: "json",
             async: true,
             /*			data:{Theater:"EMEAR"},*/
-            success: function(data) {
+			success: function(data) 
+			{
                 console.log(data);
-				alert(data);
-		}
+				processData(data);
+			}
         });
 });
 
@@ -19,6 +20,15 @@ function popup()
 {
     'use strict';
     alert("Hello World");
+}
+
+function processData(userData)
+{	
+	/*$("input[name='contact']").text(value="hw");*/
+	/*$("input:checkbox").text("hw");*/
+	
+
+	
 }
 
 $(document).on('click','#selAll', function() 
