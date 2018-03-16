@@ -14,7 +14,7 @@ if(!$link)
 
 $result = $link->query("select * from $table");
 $outp = array();
-$outp = $result->fetch_assoc();
+$outp = $result->fetch_all(MYSQLI_ASSOC);
 
 
 /*
