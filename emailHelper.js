@@ -14,6 +14,7 @@ $(document).ready(function()
 			{
 				obj = JSON.parse(data);
 				console.log(JSON.parse(data));
+				obj = obj.sort();
 				
 				processData();
 			}
@@ -23,7 +24,7 @@ $(document).ready(function()
 
 /*Create checkboxes dynamically for each contact retrieved.*/
 function processData()
-{	for(i=0; i<obj.length; i++)
+{	for(var i=0; i<obj.length; i++)
 	{
 		$('#contactContainer').append('<input type="checkbox" class="ckbx" name="contact" value="1"><span>' + obj[i].first_name + " " + obj[i].last_name + '</span><br>');
 	}
@@ -33,9 +34,28 @@ function processData()
 /*When compose button is clicked, Open default email & populate "To" field.*/
 $(document).on('click', '#compose', function()
 {
-	alert("reaching compose.")
-	var email = obj.email;
-	window.open("mailto:" + email);
+	var email = "";
+	var ckbxes = document.getElementsByName('contact');
+	
+	for(var i=0; i<obj.length; i++)
+	{
+		if(ckbxes[i].checked == true)
+		{
+			email = email + obj[i].email +  "; ";
+		}
+	}
+	
+	if(email =="")
+	{
+		alert("no contacts selected");
+	}
+	else
+	{
+		/*window.open("mailto:" + email);*/
+		window.location.href = "mailto:" + email;
+	}
+	
+	
 })
 
 

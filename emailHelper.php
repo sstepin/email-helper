@@ -12,7 +12,7 @@ if(!$link)
     die('Cound not connect:  ' . mysql_error());
 }
 
-$result = $link->query("select * from $table");
+$result = $link->query("select * from $table order by last_name");
 $outp = array();
 $outp = $result->fetch_all(MYSQLI_ASSOC);
 
