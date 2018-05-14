@@ -11,34 +11,69 @@ body
     background: #fff;
     border: 1px solid #d6d9d9;
     max-width: 500px;
-    
 }
 
 #bar
 {
     background: #d6d9d9;
     text-align: center;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0%;
+    margin-bottom: 0%;
     line-height: 2;
-    font-size:9999;
 }
 
-#toMail
+.toMailFlex
 {
     background: #fff;
     border: 1px solid #d6d9d9;
-    margin-top: 1;
-    margin-bottom: 1;
+    margin-top: 1%;
+    margin-bottom: 1%;
     margin-left: 2%;
     margin-right: 2%;
     font-size: 15pt;
+    display: flex;
+    max-height: 35px;
+    min-height: 15px;
+    padding: 5px;
+    padding-right: 0px;
+    overflow-y:auto;
+    scrollbar-3dlight-color: aquamarine;
+    flex-wrap: wrap;
 }
+
+
+
+.nameBox
+{
+    background: rgb(255, 255, 255);
+    border: 1px solid #d6d9d9;
+    padding-top: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    margin-top: 3pt;
+    margin-right: 2%;
+    margin-bottom: 1%;
+    font-size: 8pt;
+    display: inline-block;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.nameBox:hover
+{
+    cursor: pointer;
+
+
+}
+
+
+
+
 
 #selectAll
 {
     margin-top: 0;
-    margin bottom: 1%;
+    margin-bottom: 1%;
     margin-left: 2%;
     margin-right: 2%;
     font-size: 8pt;
@@ -53,11 +88,32 @@ body
     font-size: 8pt;
 }
 
+#tableContacts
+{
+    width: 100%;
+}
+
+td 
+{
+    border: 1px solid #dddddd;
+    text-align: left;
+    /*padding: 1px;*/
+}
+
+tr:hover 
+{
+   background: lightgrey;
+}
+
 button
 {
-    
     margin-left: 83.5%;
-    font-siz:8pt;
+    font-siz: 8pt;
+}
+
+.selectClass
+{
+    background: lightgreen;
 }
 
 
