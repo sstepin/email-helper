@@ -37,16 +37,13 @@ function processData(data)
 	createCheckBoxes();
 }
 
-
-//####### 1. update checkbox row HTML dynamic generation
-
 //Create checkboxes dynamically for each contact retrieved. [Called by processData() function.]
 function createCheckBoxes() 
 {
 	for (var i = 0; i < obj.length; i++)
 	{
 	
-		var html = '<tr class="contact-row" id=' + obj[i].username +'>' +
+		var rowHtml = '<tr class="contact-row" id=' + obj[i].username +'>' +
 						'<td>' +
 							'<input type="checkbox" class="ckbx" name="contact" value="1">' +
 							'<span class = "first-last-name">' + obj[i].first_name + " " + obj[i].last_name + '</span>' +
@@ -60,34 +57,83 @@ function createCheckBoxes()
 						'</td>' +
 					'</tr>' +
 					'<br>'
-		$('#tableContacts').append(html);	
+		$('#tableContacts').append(rowHtml);	
 
 	}
 }
 
-//####### 2. update namebox HTML dynamic generation
 
 //Select all is clicked (checked/unchecked).
 $(document).on('click', '#selAll', function ()
 {
 	'use strict';
 	var sAll = $('#selAll');
-	var checkboxes = $("input[name='contact']");
+	var rows = $(".contact-row");
 
 	$('.nameBox').remove();
-
 	//When select all is checked/unchecked, check/uncheck all checkboxes.
-	for (var i = 0; i < checkboxes.length; i++) 
+	for (var i = 0; i < rows.length; i++) 
 	{
-		checkboxes[i].checked = sAll.prop('checked');
+		$(rows[i]).children().children(".ckbx").prop('checked', sAll.prop('checked'));
 		
-		//var nameBoxId = $(checkboxes[i]).siblings('.username').text();
-		var nameBoxId = $('.contact-row').id;
-
 		if(sAll.prop('checked') == true)
 		{
-			$('.toMailFlex').append('<div class="nameBox"><span id =' + nameBoxId + '>' + $(checkboxes[i]).siblings('.first-last-name').text() + ' (' + $(checkboxes[i]).siblings('.username').text() + ')</span></div>');
+			createNameBoxHtml(rows[i]);
 		}
+	}
+});
+
+function createNameBoxHtml(checkedRow)
+{
+	var nameBoxId = checkedRow.id;
+	var nameBoxHtml =	'<div class="nameBox" id=' + nameBoxId + '>' +
+							'<span>' +
+								$(checkedRow).children().children(".first-last-name").text() + ' ' + $(checkedRow).children().children(".username").text() +
+							'</span>' +
+						'</div>';
+
+	 $('.toMailFlex').append(nameBoxHtml);	
+}
+
+
+
+//If checkbox clicked, add name to "toMailFlex".
+$(document).on('click', '.contact-row', function()
+{
+	if ($(this).children().children(".ckbx").prop("checked") == false) 
+	{
+		$(this).children().children(".ckbx").prop("checked", true);
+		createNameBoxHtml(this);
+	}
+	else 
+	{
+		$(this).children().children(".ckbx").prop("checked", false);
+		$('.nameBox#' + this.id).remove();
+	}
+});
+
+$(document).on('click', '.ckbx', function(event)
+{
+	$(this).parent().parent(".contact-row").click();
+});
+
+
+//If nameBox clicked, highlight/unhighlight as required.
+$(document).on('click','.nameBox', function()
+{
+	if($(this).hasClass('selectClass') == false)
+	{
+		//Unhighlight all nameBoxes.
+		$('.selectClass').removeClass('selectClass');
+		
+		//Highlight selected nameBox.
+		$( this ).addClass( "selectClass" );
+	}
+	else
+	{
+		//Unhighlight selected nameBox.
+		$(this).removeClass('selectClass');
+
 	}
 });
 
@@ -108,54 +154,19 @@ $(document).on('click', '#contactContainer', function ()
 	}
 });
 
-//###### 3. new code based on new html to handle scenario (2) from notebook
-
-//If checkbox clicked, add name to "toMailFlex".
-$(document).on('click', '.ckbx', function addNameBox()
-{
-	var nameBoxId = $(this).siblings('.username').text();
-
-	if (this.checked) 
-	{
-		$('.toMailFlex').append('<div class="nameBox"+><span id =' + nameBoxId + '>' + $(this).siblings('.first-last-name').text() + ' (' + $(this).siblings('.username').text() + ')</span></div>');
-	}
-	else 
-	{
-		$('#' + nameBoxId).parent(".nameBox").remove();
-	}
-});
-
-
-//###### 4. new code based on new html to handle scenario (3) from notebook
-
-
-//If nameBox clicked, highlight/unhighlight as required.
-$(document).on('click','.nameBox', function()
-{
-	if($(this).hasClass('selectClass') == false)
-	{
-		//Unhighlight all nameBoxes.
-		$('.selectClass').removeClass('selectClass');
-		
-		//Highlight selected nameBox.
-		$( this ).addClass( "selectClass" );
-	}
-	else
-	{
-		//Unhighlight selected nameBox.
-		$(this).removeClass('selectClass');
-	}
-});
-
-
 //If delete or backspace, then delete selected nameBox & uncheck related checkbox.
-$(document).on('keydown', function(e)
+$(document).on('keydown', function(event)
 {
-	if((e.keyCode==46) || (e.keyCode==8))
+	if((event.keyCode==46) || (event.keyCode==8))
 	{	
-		//TODO: make sure backspace doesnt go back in page history
+		//make sure backspace doesnt go back in page history
+		if(event.keyCode == 8) {
+			event.preventDefault();
+		}
 
-		//TODO: Uncheck corresponding checkbox.
+		//Uncheck corresponding checkbox.
+		var selectedNameboxId = $('.selectClass').prop("id");
+		$(".contact-row#"+ selectedNameboxId).children().children(".ckbx").prop("checked", false);
 
 		//Delete selected nameBox.
 		$('.selectClass').remove();
@@ -163,6 +174,7 @@ $(document).on('keydown', function(e)
 	}
 });
 
+//TODO: make sure email client opens from every browser
 //When compose button is clicked, Open default email & populate "To" field.
 $(document).on('click', '#compose', function ()
 {
