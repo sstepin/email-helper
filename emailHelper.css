@@ -9,8 +9,8 @@ html
 body
 {
     background: #fff;
-    border: 1px solid #d6d9d9;
-    max-width: 500px;
+    border: 1px solid #d6d8d9;
+    max-width: 800px;
 }
 
 #bar
@@ -32,16 +32,33 @@ body
     margin-right: 2%;
     font-size: 15pt;
     display: flex;
-    max-height: 35px;
-    min-height: 15px;
+    max-height: 29px;
+    min-height: 29px;
     padding: 5px;
     padding-right: 0px;
     overflow-y:auto;
     scrollbar-3dlight-color: aquamarine;
     flex-wrap: wrap;
+    width: 75%;
 }
 
 
+
+
+
+#form-bod
+{
+    
+}
+
+#filters
+{
+    margin-top: 5%;
+    margin-left: 2%;
+    float: left;
+    margin-right: 10%;
+    font-size: 8pt;
+}
 
 .nameBox
 {
@@ -50,12 +67,14 @@ body
     padding-top: 1%;
     padding-left: 1%;
     padding-right: 1%;
+    padding-bottom: 1%;
     margin-top: 3pt;
     margin-right: 2%;
     margin-bottom: 1%;
-    font-size: 8pt;
+    font-size: 9pt;
     display: inline-block;
-    vertical-align: middle;
+    /*vertical-align: middle;*/
+    
     white-space: nowrap;
 }
 
@@ -66,26 +85,39 @@ body
 
 }
 
-
-
-
-
-#selectAll
+#nameCkbx
 {
-    margin-top: 0;
-    margin-bottom: 1%;
-    margin-left: 2%;
-    margin-right: 2%;
-    font-size: 8pt;
+    /*float: left;*/
 }
+
+#selectAllBox
+{
+    /*
+    margin-top: 0;
+    margin-bottom: 0%;
+    */
+    margin-left: 5%;
+    
+    /*margin-right: 2%;
+    font-size: 8pt;
+    */
+    
+    
+}
+
 
 #contactContainer
 {
     border: 1px solid #d6d9d9;
-    margin-top: 1%;
-    margin-left: 2%;
-    margin-right: 2%;
+    /*margin-top: 0%;*/
+    /*margin-left: 2%;*/
+    /*margin-left: auto;*/
+    /*margin-right: 2%;*/
+    /*margin-right: auto;*/
+    margin-bottom: 2%;
     font-size: 8pt;
+    width: 75%;
+    float: left;
 }
 
 #tableContacts
@@ -105,16 +137,24 @@ tr:hover
    background: lightgrey;
 }
 
+#compose
+{}
+
 button
 {
-    margin-left: 83.5%;
-    font-siz: 8pt;
+    margin-left: 87%;
+    font-size: 9pt;
+    
 }
 
 .selectClass
 {
-    background: lightgreen;
+    /*background: lightgreen;*/
+    background: rgb(48, 195, 240);
+    color:rgba(255, 255, 255, 0.911);
+    /*font-weight: bold;*/
 }
+
 
 
 

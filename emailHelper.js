@@ -7,6 +7,12 @@ var dict = {};
 $(document).ready(function () 
 {
 	$('#selAll').prop('checked', false);
+	$('.filter').prop('checked',true);
+
+	//TODO: replace deprecated selectAllMatch code
+	//var config = { attributes: true, childList: true };
+	//var observer = new MutationObserver(selectAllMatch);
+	//observer.observe($('.contact-row'), config);
 
 	$.ajax(
 		{
@@ -34,20 +40,20 @@ function processData(data)
 		dict[obj[i].username] = obj[i].email;
 	}
 	
-	createCheckBoxes();
+	createCheckBoxRows();
 }
 
-//Create checkboxes dynamically for each contact retrieved. [Called by processData() function.]
-function createCheckBoxes() 
+//Create checkbox rows dynamically for each contact retrieved. [Called by processData() function.]
+function createCheckBoxRows() 
 {
 	for (var i = 0; i < obj.length; i++)
 	{
 	
-		var rowHtml = '<tr class="contact-row" id=' + obj[i].username +'>' +
+		var rowHtml = '<tr class="contact-row ' + obj[i].theatre_group + ' ' + obj[i].role + '" id=' + obj[i].username +'>' +
 						'<td>' +
 							'<input type="checkbox" class="ckbx" name="contact" value="1">' +
 							'<span class = "first-last-name">' + obj[i].first_name + " " + obj[i].last_name + '</span>' +
-							'<span class = "username">(' + obj[i].username + ')</span>' +
+							'<span class = "username"> (' + obj[i].username + ')</span>' +
 						'</td>' + 
 						'<td>' +
 							obj[i].theatre_group +
@@ -68,10 +74,12 @@ $(document).on('click', '#selAll', function ()
 {
 	'use strict';
 	var sAll = $('#selAll');
-	var rows = $(".contact-row");
+	var rows = $(".contact-row:visible");
 
+	//Clear nameboxes.
 	$('.nameBox').remove();
-	//When select all is checked/unchecked, check/uncheck all checkboxes.
+
+	//TODO: When select all is checked/unchecked, check/uncheck all UNHIDDEN checkboxes.
 	for (var i = 0; i < rows.length; i++) 
 	{
 		$(rows[i]).children().children(".ckbx").prop('checked', sAll.prop('checked'));
@@ -83,6 +91,7 @@ $(document).on('click', '#selAll', function ()
 	}
 });
 
+//Create namebox for checked row.
 function createNameBoxHtml(checkedRow)
 {
 	var nameBoxId = checkedRow.id;
@@ -95,23 +104,34 @@ function createNameBoxHtml(checkedRow)
 	 $('.toMailFlex').append(nameBoxHtml);	
 }
 
-
-
 //If checkbox clicked, add name to "toMailFlex".
 $(document).on('click', '.contact-row', function()
 {
 	if ($(this).children().children(".ckbx").prop("checked") == false) 
 	{
-		$(this).children().children(".ckbx").prop("checked", true);
-		createNameBoxHtml(this);
+		checkRow(this);
 	}
 	else 
 	{
-		$(this).children().children(".ckbx").prop("checked", false);
-		$('.nameBox#' + this.id).remove();
+		uncheckRow(this);
 	}
 });
 
+//Check row when clicked.
+function checkRow(row)
+{
+	$(row).children().children(".ckbx").prop("checked", true);
+	createNameBoxHtml(row);
+}
+
+//Uncheck row and delete nameBox when clicked.
+function uncheckRow(row)
+{
+	$(row).children().children(".ckbx").prop("checked", false);
+	$('.nameBox#' + row.id).remove();
+}
+
+//Click row when checkbox is clicked.
 $(document).on('click', '.ckbx', function(event)
 {
 	$(this).parent().parent(".contact-row").click();
@@ -137,14 +157,18 @@ $(document).on('click','.nameBox', function()
 	}
 });
 
-//If all other checkboxes are checked/unchecked, check/uncheck select all checkbox.
-$(document).on('click', '#contactContainer', function ()
+//If all other checkboxes are checked/unchecked, check/uncheck selectAll checkbox.
+function selectAllMatch()
 {
 	var sAll = $('#selAll');
-	var checkboxes = document.getElementsByName('contact');
-	var ckBoxesChecked = $("input[name='contact']:checked");
 
-	if (checkboxes.length == ckBoxesChecked.length) //Are all checkboxes checked?
+	var visibleCheckboxes = $("input[name='contact']:visible");
+
+	var visibleCheckboxesChecked = $("input[name='contact']:checked:visible");
+
+	console.log("total: " + visibleCheckboxes.length + " checked: " + visibleCheckboxesChecked.length);
+
+	if (visibleCheckboxes.length == visibleCheckboxesChecked.length) //Are all checkboxes checked?
 	{
 		sAll.prop('checked',true); 
 	}
@@ -152,7 +176,10 @@ $(document).on('click', '#contactContainer', function ()
 	{
 		sAll.prop('checked',false);
 	}
-});
+};
+
+//If row clicked or modified, re-evaluate selectAll.
+$(document).on('click DOMSubtreeModified', '.contact-row', selectAllMatch);
 
 //If delete or backspace, then delete selected nameBox & uncheck related checkbox.
 $(document).on('keydown', function(event)
@@ -167,6 +194,8 @@ $(document).on('keydown', function(event)
 		//Uncheck corresponding checkbox.
 		var selectedNameboxId = $('.selectClass').prop("id");
 		$(".contact-row#"+ selectedNameboxId).children().children(".ckbx").prop("checked", false);
+
+		selectAllMatch();
 
 		//Delete selected nameBox.
 		$('.selectClass').remove();
@@ -202,3 +231,37 @@ $(document).on('click', '#compose', function ()
 
 	}
 });
+
+//Filter according to theater/role selected.
+$(document).on('click','.filter',function()
+{
+	//Show all rows.
+	$('.contact-row').show();
+
+	//Create array with unchecked filter values.
+	var uncheckedFilters = $('.filter:not(:checked)');
+
+	//For each of unchecked filters, grab the theatre/role it represents.
+	for(i=0; i<uncheckedFilters.length; i++)
+	{
+		//Assign filters to a variable.
+		var rowClassToFilter = uncheckedFilters[i].name;
+		//Assign rows of class to an array.
+		var rowsInClass = $('.' + rowClassToFilter);
+		
+		for(j=0; j<rowsInClass.length ;j++)
+		{
+			//Uncheck row (which also deletes namebox).
+			uncheckRow(rowsInClass[j]);
+		}
+
+		//$('#selAll').prop('checked', false);
+	
+		//Hide row(s) in class.
+		$('.' + rowClassToFilter).hide();
+	}
+
+	
+
+});
+
